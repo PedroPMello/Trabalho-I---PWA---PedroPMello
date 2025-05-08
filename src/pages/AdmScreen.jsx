@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap';
+import api from '../api';
 
 function AdmScreen() {
   const [filmes, setFilmes] = useState([]);
@@ -16,8 +17,7 @@ function AdmScreen() {
   const [isEditMode, setIsEditMode] = useState(false);
 
   const fetchFilmes = () => {
-    fetch('http://localhost:3000/api/filmes')
-      .then((response) => response.json())
+    api.get('/api/filmes')
       .then((data) => setFilmes(data))
       .catch((error) => console.error('Erro ao carregar filmes', error));
   };
@@ -53,50 +53,30 @@ function AdmScreen() {
     }));
   };
 
-  const handleSaveFilme = () => {
-    const method = isEditMode ? 'PUT' : 'POST';
-    const url = isEditMode
-      ? `http://localhost:3000/api/filmes/${formData.id}`
-      : 'http://localhost:3000/api/filmes';
-  
-    const dataToSend = { ...formData };
-  
-    if (!isEditMode) {
-      delete dataToSend.id;
-    }
-  
-    dataToSend.ano = Number(dataToSend.ano);
-
+  const handleSaveFilme = async () => {
     const administradorId = localStorage.getItem('administradorId');
-    dataToSend.administrador_id = Number(administradorId);
-
-    console.log('Enviando para o servidor:', dataToSend);
-  
-    fetch(url, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataToSend),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Erro ao salvar o filme');
-        }
-        return response.json();
-      })
-      .then(() => {
-        fetchFilmes();
-        handleCloseModal();
-      })
-      .catch((error) => console.error('Erro ao salvar filme:', error));
+    const dataToSend = {
+      ...formData,
+      ano: Number(formData.ano),
+      administrador_id: Number(administradorId),
+    };
+    try {
+      if (!isEditMode) {
+        delete dataToSend.id;
+        await api.post('/api/filmes', dataToSend);
+      } else {
+        await api.put(`/api/filmes/${formData.id}`, dataToSend);
+      }
+      fetchFilmes();
+      handleCloseModal();
+    } catch (error) {
+      console.error('Erro ao salvar filme:', error);
+    }
   };
 
   const handleDeleteFilme = (id) => {
     if (window.confirm('Tem certeza que deseja excluir este filme?')) {
-      fetch(`http://localhost:3000/api/filmes/${id}`, {
-        method: 'DELETE',
-      })
+      api.delete(`/api/filmes/${id}`)
         .then(() => fetchFilmes())
         .catch((error) => console.error('Erro ao deletar filme:', error));
     }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import api from '../api';
 
 function Cadastro() {
   const [nome, setNome] = useState('');
@@ -19,22 +20,9 @@ function Cadastro() {
     }
   
     try {
-      const response = await fetch('http://localhost:3000/api/usuarios', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ nome, email, senha })
-      });
+      const response = await api.post('/api/usuarios', { nome, email, senha });
   
-      const responseBody = await response.text();
-  
-      if (!response.ok) {
-        console.error('Erro do servidor:', responseBody);
-        throw new Error('Erro ao registrar usuário.');
-      }
-  
-      console.log('Cadastro realizado com sucesso:', responseBody);
+      console.log('Cadastro realizado com sucesso:', response);
       setSucesso('Cadastro realizado com sucesso!');
       setErro('');
   

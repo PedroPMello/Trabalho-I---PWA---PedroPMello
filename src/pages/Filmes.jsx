@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Modal } from 'react-bootstrap';
+import api from '../api';
 
 function Filmes() {
   const [filmes, setFilmes] = useState([]);
@@ -7,27 +8,28 @@ function Filmes() {
   const [showModal, setShowModal] = useState(false);
   const [filmeSelecionado, setFilmeSelecionado] = useState(null);
 
-  const handleShow = (filme) => {
-    setFilmeSelecionado(filme);
-    setShowModal(true);
+const handleShow = (filme) => {
+  setFilmeSelecionado(filme);
+  setShowModal(true);
+};
+
+const handleClose = () => {
+  setShowModal(false);
+  setFilmeSelecionado(null);
+};
+
+useEffect(() => {
+  const carregarFilmes = async () => {
+    try {
+      const data = await api.get('/api/filmes');
+      setFilmes(data);
+    } catch (error) {
+      setErro(error.message);
+    }
   };
 
-  const handleClose = () => {
-    setShowModal(false);
-    setFilmeSelecionado(null);
-  };
-
-  useEffect(() => {
-    fetch('http://localhost:3000/api/filmes')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Erro ao carregar filmes');
-        }
-        return response.json();
-      })
-      .then((data) => setFilmes(data))
-      .catch((error) => setErro(error.message));
-  }, []);
+  carregarFilmes();
+}, []);
 
   if (erro) {
     return <Container><p>{erro}</p></Container>;
@@ -54,7 +56,7 @@ function Filmes() {
         <Modal.Header closeButton style={{ backgroundColor: '#2f4f4f', color: 'white' }}>
           <Modal.Title>{filmeSelecionado?.titulo}</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ backgroundColor: '#d3d3d3' }}>
+        <Modal.Body style={{ backgroundColor: '#808080' }}>
           <section>
             <h5>Sinopse</h5>
             <p>{filmeSelecionado?.sinopse || 'Sinopse não informada.'}</p>
