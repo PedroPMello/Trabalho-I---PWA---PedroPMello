@@ -1,38 +1,78 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Container, Form, Button, Alert } from 'react-bootstrap';
 
-export default function Login() {
+function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [erro, setErro] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    
+    const loginData = { email, senha };
+  
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch('http://localhost:3000/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha })
+        body: JSON.stringify(loginData),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         localStorage.setItem('token', data.token);
-        window.location.href = '/filmes';
+        localStorage.setItem('role', data.role);
+
+        if (data.role === 'admin') {
+          localStorage.setItem('administradorId', data.administradorId);
+        } else {
+          localStorage.setItem('usuarioId', data.usuarioId);
+        }
+  
+        navigate('/filmes');
       } else {
-        alert(data.message || 'Erro no login');
+        setErro(data.message || 'Erro no login');
       }
     } catch (error) {
-      console.error('Erro:', error);
-      alert('Erro de conexão');
+      setErro('Erro ao tentar realizar login');
     }
   };
 
   return (
-    <form onSubmit={handleLogin}>
+    <Container>
       <h2>Login</h2>
-      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      <input type="password" placeholder="Senha" value={senha} onChange={(e) => setSenha(e.target.value)} required />
-      <button type="submit">Entrar</button>
-    </form>
+      <Form onSubmit={handleLogin}>
+        <Form.Group controlId="email">
+          <Form.Label>Email</Form.Label>
+          <Form.Control 
+            type="email" 
+            placeholder="Enter email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+          />
+        </Form.Group>
+
+        <Form.Group controlId="senha">
+          <Form.Label>Senha</Form.Label>
+          <Form.Control 
+            type="password" 
+            placeholder="Password" 
+            value={senha} 
+            onChange={(e) => setSenha(e.target.value)} 
+          />
+        </Form.Group>
+
+        <Button variant="primary" type="submit">
+          Entrar
+        </Button>
+      </Form>
+
+      {erro && <Alert variant="danger">{erro}</Alert>}
+    </Container>
   );
 }
+
+export default Login;

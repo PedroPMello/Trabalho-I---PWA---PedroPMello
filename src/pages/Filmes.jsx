@@ -1,31 +1,106 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Card, Button, Modal } from 'react-bootstrap';
 
-export default function Filmes() {
+function Filmes() {
   const [filmes, setFilmes] = useState([]);
+  const [erro, setErro] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [filmeSelecionado, setFilmeSelecionado] = useState(null);
+
+  const handleShow = (filme) => {
+    setFilmeSelecionado(filme);
+    setShowModal(true);
+  };
+
+  const handleClose = () => {
+    setShowModal(false);
+    setFilmeSelecionado(null);
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      window.location.href = '/login';
-      return;
-    }
-
-    fetch('http://localhost:3000/api/filmes', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-      .then(response => response.json())
-      .then(data => setFilmes(data))
-      .catch(error => console.error('Erro ao carregar filmes:', error));
+    fetch('http://localhost:3000/api/filmes')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Erro ao carregar filmes');
+        }
+        return response.json();
+      })
+      .then((data) => setFilmes(data))
+      .catch((error) => setErro(error.message));
   }, []);
 
+  if (erro) {
+    return <Container><p>{erro}</p></Container>;
+  }
+
   return (
-    <div>
-      <h1>Lista de Filmes</h1>
-      <ul>
-        {filmes.map(filme => (
-          <li key={filme.id}>{filme.titulo} ({filme.ano})</li>
+    <Container className="my-4">
+      <h1 className="mb-4">Filmes em Destaque</h1>
+      <Row>
+        {filmes.map((filme) => (
+          <Col key={filme.id} xs={12} md={6} lg={4} className="mb-4">
+            <Card>
+              <Card.Body>
+                <Card.Title>{filme.titulo}</Card.Title>
+                <Card.Text>{filme.descricao}</Card.Text>
+                <Button variant="primary" onClick={() => handleShow(filme)}>Ver detalhes</Button>
+              </Card.Body>
+            </Card>
+          </Col>
         ))}
-      </ul>
-    </div>
+      </Row>
+
+      <Modal show={showModal} onHide={handleClose} centered size="lg">
+        <Modal.Header closeButton style={{ backgroundColor: '#2f4f4f', color: 'white' }}>
+          <Modal.Title>{filmeSelecionado?.titulo}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ backgroundColor: '#d3d3d3' }}>
+          <section>
+            <h5>Sinopse</h5>
+            <p>{filmeSelecionado?.sinopse || 'Sinopse não informada.'}</p>
+          </section>
+
+          <hr />
+
+          <section>
+            <h5>Ano</h5>
+            <p>{filmeSelecionado?.ano || 'Ano não informado.'}</p>
+          </section>
+
+          <hr />
+
+          <section>
+            <h5>Gênero</h5>
+            <p>{filmeSelecionado?.genero || 'Gênero não informado.'}</p>
+          </section>
+
+          <hr />
+
+          <section>
+            <h5>Elenco</h5>
+            {filmeSelecionado?.elenco ? (
+              <p>{filmeSelecionado.elenco}</p>
+            ) : (
+              <p>Elenco não informado.</p>
+            )}
+          </section>
+
+          <hr />
+
+          <section>
+            <h5>Plataforma</h5>
+            <p>{filmeSelecionado?.plataforma || 'Plataforma não informada.'}</p>
+          </section>
+
+        </Modal.Body>
+        <Modal.Footer style={{ backgroundColor: '#2f4f4f' }}>
+          <Button variant="light" onClick={handleClose}>
+            Fechar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
   );
 }
+
+export default Filmes;
