@@ -12,6 +12,8 @@ function Header() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.removeItem('administradorId');
+    localStorage.removeItem('usuarioId');
     navigate('/login');
   };
 
@@ -26,7 +28,10 @@ function Header() {
             <Nav.Link href="/filmes">Filmes</Nav.Link>
             {isAdmin && <Nav.Link href="/admin/filmes">Administração de Filmes</Nav.Link>} 
             {token ? (
-              <Nav.Link onClick={handleLogout}>Sair</Nav.Link>
+              <>
+                <Nav.Link href="/perfil">Meu Perfil</Nav.Link>
+                <Nav.Link onClick={handleLogout}>Sair</Nav.Link>
+              </>
             ) : (
               <NavDropdown title="Conta" id="basic-nav-dropdown">
                 <NavDropdown.Item href="/login">Login</NavDropdown.Item>
