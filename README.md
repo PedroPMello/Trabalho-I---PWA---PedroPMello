@@ -1,70 +1,39 @@
-# Getting Started with Create React App
+# Trabalho I - PWA - PedroPMello
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este é o frontend da aplicação "Site de Filmes", desenvolvida como parte de um Trabalho Prático para a disciplina de Programação para WEB (Ciência da Computação - IFSul). Ele permite que usuários visualizem uma lista de filmes, realizem login/cadastro, editem seus próprios perfis e, no caso de administradores, gerenciem a lista de filmes.
 
-## Available Scripts
+## Funcionalidades
 
-In the project directory, you can run:
+* **Página Inicial (Home):** Boas-vindas e navegação para a lista de filmes.
+* **Lista de Filmes:** Visualização de todos os filmes disponíveis, com detalhes acessíveis via modal.
+* **Autenticação JWT:**
+    * **Login:** Usuários e administradores podem fazer login com email e senha.
+    * **Cadastro:** Novas contas de usuário podem ser criadas.
+    * **Sair:** Encerrar sessão.
+* **Rotas Protegidas:**
+    * Acesso à lista de filmes e ao perfil de usuário/administrador requer autenticação.
+    * A tela de administração de filmes é restrita apenas a usuários com perfil de 'admin'.
+* **Gestão de Perfil:**
+    * Usuários autenticados podem visualizar e editar seus próprios dados (nome, email, senha).
+    * Um usuário não pode acessar ou modificar dados de outros usuários.
+* **Administração de Filmes (Apenas para Administradores):**
+    * Adicionar novos filmes.
+    * Editar filmes existentes.
+    * Remover filmes (controle de autorização rigoroso no backend, mas a ação é visível apenas para admins no frontend).
+* **Experiência do Usuário:** Interface responsiva e intuitiva utilizando React Bootstrap.
 
-### `npm start`
+## Tecnologias Utilizadas
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* **React:** Biblioteca JavaScript para construção da interface de usuário.
+* **React Router DOM:** Para gerenciamento de rotas na aplicação single-page.
+* **React Bootstrap:** Componentes Bootstrap reutilizáveis para React, facilitando o design responsivo.
+* **Axios / Fetch API:** Para comunicação com a API backend.
+* **Local Storage:** Para armazenamento de token JWT e informações de `role` do usuário.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Deploy
 
-### `npm test`
+Este frontend está hospedado na Vercel e pode ser acessado em: (https://vercel.com/pedro-pizzolato-mellos-projects/trabalho-ii-pwa-pedropmello)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Projeto Relacionado
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* **Backend (API):** (https://github.com/PedroPMello/PW---Trabalho-I---API---PedroPMello)
